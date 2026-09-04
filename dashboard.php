@@ -92,7 +92,7 @@ $available_months = $month_stmt->fetchAll();
         .logout-btn { color: #e74c3c; text-decoration: none; font-weight: bold; border: 1.5px solid #e74c3c; padding: 8px 16px; border-radius: 6px; font-size: 14px; transition: 0.2s; }
         .logout-btn:hover { background: #e74c3c; color: white; }
         
-        /* Excel Export utility markup button link */
+        /* Excel Export utility mark up button link */
         .export-btn { background: #27ae60; color: white; text-decoration: none; font-weight: bold; padding: 9px 16px; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
         .export-btn:hover { background: #219653; }
 
@@ -189,17 +189,3 @@ $available_months = $month_stmt->fetchAll();
             </form>
         </div>
 
-        <!-- Sleek Balance Summary Presentation Cards Layout -->
-        <div class="stats-grid">
-            <div class="card card-balance">
-                <h3>Current Balance</h3>
-                <p><?= number_format($current_balance, 2) ?> Rs.</p>
-            </div>
-            <div class="card card-income">
-                <h3>Total Income</h3>
-                <p class="income-val"><?= number_format($total_income, 2) ?> Rs.</p>
-            </div>
-            <div class="card card-expense">
-                <h3>Total Expenses</h3>
-                <p class="expense-val"><?= number_format($total_expense, 2) ?> Rs.</p>
-            </div>  
