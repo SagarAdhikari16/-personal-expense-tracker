@@ -189,3 +189,17 @@ $available_months = $month_stmt->fetchAll();
             </form>
         </div>
 
+        <!-- Sleek Balance Summary Presentation Cards Layout -->
+        <div class="stats-grid">
+            <div class="card card-balance">
+                <h3>Current Balance</h3>
+                <p><?= number_format($current_balance, 2) ?> Rs.</p>
+            </div>
+            <div class="card card-income">
+                <h3>Total Income</h3>
+                <p class="income-val"><?= number_format($total_income, 2) ?> Rs.</p>
+            </div>
+            <div class="card card-expense">
+                <h3>Total Expenses</h3>
+                <p class="expense-val"><?= number_format($total_expense, 2) ?> Rs.</p>
+            </div>  
