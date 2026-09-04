@@ -58,7 +58,7 @@ $current_balance = $total_income - $total_expense;
     <title>Dashboard - Personal Expense Tracker</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
+        .container { max-width: 1000px; margin: 0 auto; }
         .header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .header h1 { margin: 0; font-size: 24px; color: #333; }
         .logout-btn { color: #e74c3c; text-decoration: none; font-weight: bold; border: 1px solid #e74c3c; padding: 6px 12px; border-radius: 4px; }
@@ -75,7 +75,7 @@ $current_balance = $total_income - $total_expense;
 
         /* Main Workspace Split layout */
         .main-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
-        .box { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); height: fit-content; }
+        .box { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); height: fit-content; margin-bottom: 20px; }
         .box h2 { margin-top: 0; font-size: 18px; border-bottom: 2px solid #f4f7f6; padding-bottom: 10px; color: #333; }
         
         /* Form Styling */
@@ -124,89 +124,87 @@ $current_balance = $total_income - $total_expense;
         </div>
 
         <div class="main-layout">
-            <!-- Transaction Input Form Column -->
-            <div class="box">
-                <h2>Add Transaction</h2>
-                <div class="alert-error" id="jsErrorBlock"></div>
-                <form method="POST" id="transactionForm">
-                    <div class="form-group">
-                        <label>Description / Title</label>
-                        <input type="text" name="title" id="txTitle" placeholder="e.g., Internet bill, Salary">
+            <!-- Left Column: Add Transaction Form & Charts -->
+            <div>
+                <!-- Transaction Input Form -->
+                <div class="box">
+                    <h2>Add Transaction</h2>
+                    <div class="alert-error" id="jsErrorBlock"></div>
+                    <form method="POST" id="transactionForm">
+                        <div class="form-group">
+                            <label>Description / Title</label>
+                            <input type="text" name="title" id="txTitle" placeholder="e.g., Internet bill, Salary">
+                        </div>
+                        <div class="form-group">
+                            <label>Amount (Rs.)</label>
+                            <input type="number" step="0.01" name="amount" id="txAmount" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select name="type" id="txType">
+                                <option value="expense">Expense</option>
+                                <option value="income">Income</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" name="date" id="txDate" value="<?= date('Y-m-d') ?>">
+                        </div>
+                        <button type="submit" name="add_transaction" class="submit-btn">Save Entry</button>
+                    </form>
+                </div>
+
+                <!-- Dynamic Expenses Visualization Chart Box -->
+                <div class="box">
+                    <h2>Expense Distribution</h2>
+                    <div style="max-width: 250px; margin: 0 auto; padding: 10px 0;">
+                        <canvas id="expenseChart"></canvas>
                     </div>
-                    <div class="form-group">
-                        <label>Amount (Rs.)</label>
-                        <input type="number" step="0.01" name="amount" id="txAmount" placeholder="0.00">
-                    </div>
-                    <div class="form-group">
-                        <label>Type</label>
-                        <select name="type" id="txType">
-                            <option value="expense">Expense</option>
-                            <option value="income">Income</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" name="date" id="txDate" value="<?= date('Y-m-d') ?>">
-                    </div>
-                    <button type="submit" name="add_transaction" class="submit-btn">Save Entry</button>
-                </form>
+                </div>
             </div>
 
-            <!-- Ledger View History Column -->
-            <div class="box">
-                <h2>History Ledger</h2>
-                <?php if (empty($transactions)): ?>
-                    <div class="no-data">No transactions added yet.</div>
-                <?php else: ?>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Details</th>
-                                <th>Amount</th>
-                                <th>Type</th>
-                                <th>Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($transactions as $t): ?>
+            <!-- Right Column: Ledger View History -->
+            <div>
+                <div class="box">
+                    <h2>History Ledger</h2>
+                    <?php if (empty($transactions)): ?>
+                        <div class="no-data">No transactions added yet.</div>
+                    <?php else: ?>
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td><?= htmlspecialchars($t['title']) ?></td>
-                                    <td class="<?= $t['type'] === 'income' ? 'income-val' : 'expense-val' ?>">
-                                        Rs. <?= number_format($t['amount'], 2) ?>
-                                    </td>
-                                    <td>
-                                        <span class="type-badge badge-<?= $t['type'] ?>">
-                                            <?= $t['type'] ?>
-                                        </span>
-                                    </td>
-                                    <td><?= date('Y-m-d', strtotime($t['date'])) ?></td>
-                                    <td>
-                                        <a href="dashboard.php?delete=<?= $t['id'] ?>" class="delete-link" onclick="return confirm('Are you sure you want to remove this record?');">&times;</a>
-                                    </td>
+                                    <th>Details</th>
+                                    <th>Amount</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php endif; ?>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($transactions as $t): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($t['title']) ?></td>
+                                        <td class="<?= $t['type'] === 'income' ? 'income-val' : 'expense-val' ?>">
+                                            Rs. <?= number_format($t['amount'], 2) ?>
+                                        </td>
+                                        <td>
+                                            <span class="type-badge badge-<?= $t['type'] ?>">
+                                                <?= $t['type'] ?>
+                                            </span>
+                                        </td>
+                                        <td><?= date('Y-m-d', strtotime($t['date'])) ?></td>
+                                        <td>
+                                            <a href="dashboard.php?delete=<?= $t['id'] ?>" class="delete-link" onclick="return confirm('Are you sure you want to remove this record?');">&times;</a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Client side dynamic validations component -->
     <script>
-        document.getElementById('transactionForm').addEventListener('submit', function(e) {
-            const title = document.getElementById('txTitle').value.trim();
-            const amount = document.getElementById('txAmount').value.trim();
-            const date = document.getElementById('txDate').value.trim();
-            const errorBlock = document.getElementById('jsErrorBlock');
-            
-            let messages = [];
-
-            if (!title) {
-                messages.push("Please provide a valid transaction title.");
-            }
-            if (!amount || parseFloat(amount) <= 0) {
-                messages.push("Amount must be a positive number greater than 0.");
-            }
-            if (!date) {
