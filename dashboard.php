@@ -1,3 +1,6 @@
+My apologies, bro! The markdown text area cut off the bottom of the code block. Let's fix this right now with the complete, unabridged codebase without any truncations or hidden backslashes.
+Here is the entire dashboard.php file from the opening <?php tag down to the closing </html> tag. Delete everything in your file, paste this full block, and save:
+
 <?php
 require 'db.php';
 session_start();
@@ -92,7 +95,7 @@ $available_months = $month_stmt->fetchAll();
         .logout-btn { color: #e74c3c; text-decoration: none; font-weight: bold; border: 1.5px solid #e74c3c; padding: 8px 16px; border-radius: 6px; font-size: 14px; transition: 0.2s; }
         .logout-btn:hover { background: #e74c3c; color: white; }
         
-        /* Excel Export utility mark up button link */
+        /* Excel Export utility button link */
         .export-btn { background: #27ae60; color: white; text-decoration: none; font-weight: bold; padding: 9px 16px; border-radius: 6px; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
         .export-btn:hover { background: #219653; }
 
@@ -188,4 +191,119 @@ $available_months = $month_stmt->fetchAll();
                 <?php endif; ?>
             </form>
         </div>
+
+
+Current Wallet Balance
+Rs. 
+
+
+Total Inflow Metrics
++ Rs. 
+
+
+Total Outflow Metrics
+- Rs. 
+
+Add Transaction
+
+
+💰 Salary / Income Source
+🍳 Food & Groceries
+🏠 Rent & Housing
+🔌 Utilities & Bills
+🎬 Entertainment & Leisure
+🚗 Travel & Fuel
+📦 Other Miscellaneous
+
+
+Expense (-)
+Income (+)
+
+
+Save Entry
+
+Expense Distribution
+
+
+
+
+History Ledger Summary
+
+No recorded transaction metrics found matching active filters.
+document.getElementById('transactionForm').addEventListener('submit', function(e) {
+const amount = document.getElementById('txAmount').value.trim();
+const date = document.getElementById('txDate').value.trim();
+const errorBlock = document.getElementById('jsErrorBlock');
+let messages = [];
+if (!amount || parseFloat(amount) <= 0) {
+messages.push("Amount must be a positive number greater than 0.");
+}
+if (!date) {
+messages.push("Please select a tracking date.");
+}
+if (messages.length > 0) {
+e.preventDefault(); // Lock form submission execution pipeline
+errorBlock.style.display = 'block';
+errorBlock.innerHTML = messages.join('
+');
+} else {
+errorBlock.style.display = 'none';
+}
+});
+// Fetch financial records dynamically matching the active filter options
+const urlParams = new URLSearchParams(window.location.search);
+let apiQueryString = '';
+if(urlParams.has('filter_month')) {
+apiQueryString = '?filter_month=' + urlParams.get('filter_month');
+}
+fetch('api_expenses.php' + apiQueryString)
+.then(response => response.json())
+.then(data => {
+if (!data || data.length === 0) {
+document.getElementById('expenseChart').parentNode.innerHTML = "No distinct expense categorization available for this layout scope.";
+return;
+}
+const labels = data.map(item => item.title);
+const amounts = data.map(item => item.total);
+const ctx = document.getElementById('expenseChart').getContext('2d');
+new Chart(ctx, {
+type: 'pie',
+data: {
+labels: labels,
+datasets: [{
+data: amounts,
+backgroundColor: [
+'#e74c3c', '#3498db', '#f1c40f', '#9b59b6', '#34495e', '#1abc9c', '#e67e22'
+],
+borderWidth: 1
+}]
+},
+options: {
+responsive: true,
+plugins: {
+legend: {
+position: 'bottom',
+labels: { boxWidth: 10, font: { size: 11, family: 'Segoe UI' } }
+}
+}
+}
+});
+})
+.catch(err => console.error("Error reading chart metrics API: ", err));
+
+
+
+---
+
+### Step 2: Push the Complete and Finalized File to GitHub
+Now that the entire script is complete down to the root HTML selectors, let's run our terminal sync sequence to update your repo:
+
+```bash
+git add dashboard.php
+git commit -m "Fix: Finalize dashboard view grid with full script segments"
+git push origin main
+```
+
+Refresh your browser to see your complete dashboard running smoothly. Let me know when you see the final interface layout!
+
 
